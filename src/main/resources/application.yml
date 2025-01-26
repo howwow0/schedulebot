@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: scheduled-bot
+
+  main:
+    banner-mode: off
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  datasource:
+    url: jdbc:postgresql://localhost:${DATABASE_PORT:5432}/${DATABASE_NAME:postgres}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:sa}
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+        connection:
+          pool_size: 30
+        show_sql: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+bot:
+  token: ${TELEGRAM_BOT_TOKEN:...}
+  name: ${TELEGRAM_BOT_NAME:...}
