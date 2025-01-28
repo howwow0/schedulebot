@@ -5,7 +5,6 @@ import com.howwow.schedulebot.chat.dto.request.CreateChatSettingsRequest;
 import com.howwow.schedulebot.exception.AlreadyExistsException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;

@@ -3,7 +3,6 @@ package com.howwow.schedulebot.commands.service;
 import com.howwow.schedulebot.commands.BotCommands;
 import com.howwow.schedulebot.service.HelpCommandService;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
