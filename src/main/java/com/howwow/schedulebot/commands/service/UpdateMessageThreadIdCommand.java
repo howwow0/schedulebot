@@ -15,10 +15,9 @@ public final class UpdateMessageThreadIdCommand extends ServiceCommand {
 
     private final ChatSettingsService chatSettingsService;
 
-    public UpdateMessageThreadIdCommand(ChatSettingsService chatSettingsService, TelegramLongPollingCommandBot telegramBot) {
+    public UpdateMessageThreadIdCommand(ChatSettingsService chatSettingsService) {
         super(BotCommands.LINK_TOPIC.toString(), "Привязать уведомления к теме чата 📌");
         this.chatSettingsService = chatSettingsService;
-        telegramBot.register(this);
     }
 
     @Override

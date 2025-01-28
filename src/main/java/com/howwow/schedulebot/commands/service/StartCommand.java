@@ -15,10 +15,9 @@ public final class StartCommand extends ServiceCommand {
 
     private final ChatSettingsService chatSettingsService;
 
-    public StartCommand(ChatSettingsService chatSettingsService, TelegramLongPollingCommandBot telegramBot) {
+    public StartCommand(ChatSettingsService chatSettingsService) {
         super(BotCommands.START.toString(), "Начать работу с ботом ▶️");
         this.chatSettingsService = chatSettingsService;
-        telegramBot.register(this);
     }
 
     @Override

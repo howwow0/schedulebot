@@ -15,10 +15,9 @@ public class DisableDeliveryCommand extends ServiceCommand {
 
     private final ChatSettingsService chatSettingsService;
 
-    public DisableDeliveryCommand(ChatSettingsService chatSettingsService, TelegramLongPollingCommandBot telegramBot) {
+    public DisableDeliveryCommand(ChatSettingsService chatSettingsService) {
         super(BotCommands.DISABLE_DELIVERY.toString(), "Отключить уведомления 🔕");
         this.chatSettingsService = chatSettingsService;
-        telegramBot.register(this);
     }
 
     @Override

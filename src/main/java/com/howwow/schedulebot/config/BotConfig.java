@@ -1,6 +1,7 @@
 package com.howwow.schedulebot.config;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class BotConfig {
     private String name;
     private String token;
+
 
     @Bean
     public TelegramBotsApi telegramBotsApi() throws TelegramApiException {

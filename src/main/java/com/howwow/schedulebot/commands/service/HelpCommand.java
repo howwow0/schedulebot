@@ -13,10 +13,9 @@ public final class HelpCommand extends ServiceCommand {
 
     private final HelpCommandService helpCommandService;
 
-    public HelpCommand(HelpCommandService helpCommandService, TelegramLongPollingCommandBot telegramBot) {
+    public HelpCommand(HelpCommandService helpCommandService) {
         super(BotCommands.HELP.toString(), "Справка по командам 📋");
         this.helpCommandService = helpCommandService;
-        telegramBot.register(this);
     }
 
     @Override

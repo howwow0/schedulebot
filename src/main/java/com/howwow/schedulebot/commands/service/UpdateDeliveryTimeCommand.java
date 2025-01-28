@@ -20,10 +20,9 @@ public class UpdateDeliveryTimeCommand extends ServiceCommand {
 
     private final ChatSettingsService chatSettingsService;
 
-    public UpdateDeliveryTimeCommand(ChatSettingsService chatSettingsService, TelegramLongPollingCommandBot telegramBot) {
+    public UpdateDeliveryTimeCommand(ChatSettingsService chatSettingsService) {
         super(BotCommands.UP_DELIVERY_TIME.toString(), "Установить время уведомлений ⏰");
         this.chatSettingsService = chatSettingsService;
-        telegramBot.register(this);
     }
 
     @Override

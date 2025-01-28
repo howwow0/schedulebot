@@ -16,10 +16,9 @@ public class UpdateGroupNameCommand extends ServiceCommand{
 
     private final ChatSettingsService chatSettingsService;
 
-    public UpdateGroupNameCommand(ChatSettingsService chatSettingsService, TelegramLongPollingCommandBot telegramBot) {
+    public UpdateGroupNameCommand(ChatSettingsService chatSettingsService) {
         super(BotCommands.UP_GROUP_NAME.toString(), "Обновить группу 💬");
         this.chatSettingsService = chatSettingsService;
-        telegramBot.register(this);
     }
 
     @Override

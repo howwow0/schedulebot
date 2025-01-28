@@ -17,11 +17,10 @@ public class SettingsCommand extends ServiceCommand {
     private final ChatSettingsService chatSettingsService;
     private final SettingsCommandFormatter settingsCommandFormatter;
 
-    public SettingsCommand(ChatSettingsService chatSettingsService, TelegramLongPollingCommandBot telegramBot, SettingsCommandFormatter settingsCommandFormatter) {
+    public SettingsCommand(ChatSettingsService chatSettingsService, SettingsCommandFormatter settingsCommandFormatter) {
         super(BotCommands.SETTINGS.toString(), "Текущие настройки ⚙️");
         this.chatSettingsService = chatSettingsService;
         this.settingsCommandFormatter = settingsCommandFormatter;
-        telegramBot.register(this);
     }
 
     @Override
