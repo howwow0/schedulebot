@@ -11,7 +11,6 @@ import java.util.stream.StreamSupport;
 @Repository
 public interface ChatSettingsRepository extends CommonRepository<ChatSettings>{
     boolean existsByChatId(Long chatId);
-    void deleteByChatId(Long chatId);
     ChatSettings findByChatId(Long chatId);
 
     default Map<String, List<ChatSettings>> findGroupingByGroupName() {
