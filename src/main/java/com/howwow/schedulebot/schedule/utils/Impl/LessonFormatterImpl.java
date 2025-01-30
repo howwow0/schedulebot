@@ -21,11 +21,12 @@ public class LessonFormatterImpl implements LessonFormatter {
         return "📅 *Расписание занятий:*\n\n" +
                 lessons.stream()
                         .map(lesson -> String.format(
-                                "🎯 *Урок %d:*\n" +
-                                        "   ⏰ *Время:* %s - %s\n" +
-                                        "   📚 *Дисциплина:* %s\n" +
-                                        "   👨‍🏫 *Преподаватель:* %s\n" +
-                                        "   🚪 *Аудитория:* %s",
+                                """
+                                        🎯 *Урок %d:*
+                                           ⏰ *Время:* %s - %s
+                                           📚 *Дисциплина:* %s
+                                           👨‍🏫 *Преподаватель:* %s
+                                           🚪 *Аудитория:* %s""",
                                 lesson.getNumberLesson(),
                                 lesson.getStartTime().format(TIME_FORMATTER),
                                 lesson.getEndTime().format(TIME_FORMATTER),
