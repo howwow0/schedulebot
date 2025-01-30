@@ -1,10 +1,10 @@
-package com.howwow.schedulebot.commands.service;
+package com.howwow.schedulebot.telegram.commands.service;
 
-import com.howwow.schedulebot.commands.BotCommands;
+import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.chat.dto.request.FindChatRequest;
 import com.howwow.schedulebot.exception.NotFoundException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
-import com.howwow.schedulebot.service.utils.SettingsCommandFormatter;
+import com.howwow.schedulebot.telegram.service.utils.SettingsCommandFormatter;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;

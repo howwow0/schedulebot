@@ -1,7 +1,7 @@
-package com.howwow.schedulebot.service.utils.Impl;
+package com.howwow.schedulebot.telegram.service.utils.Impl;
 
 import com.howwow.schedulebot.chat.dto.response.FoundedChatResponse;
-import com.howwow.schedulebot.service.utils.SettingsCommandFormatter;
+import com.howwow.schedulebot.telegram.service.utils.SettingsCommandFormatter;
 import org.springframework.stereotype.Component;
 
 @Component

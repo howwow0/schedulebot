@@ -1,6 +1,6 @@
 package com.howwow.schedulebot.config;
 
-import com.howwow.schedulebot.commands.service.*;
+import com.howwow.schedulebot.telegram.commands.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -18,8 +18,6 @@ public class CommandRegistration implements InitializingBean {
     private final UpdateDeliveryTimeCommand updateDeliveryTimeCommand;
     private final UpdateGroupNameCommand updateGroupNameCommand;
     private final UpdateMessageThreadIdCommand updateMessageThreadIdCommand;
-
-
     @Override
     public void afterPropertiesSet() {
         telegramLongPollingCommandBot.register(startCommand);

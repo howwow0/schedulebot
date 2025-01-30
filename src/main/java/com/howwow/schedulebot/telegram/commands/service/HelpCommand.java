@@ -1,7 +1,7 @@
-package com.howwow.schedulebot.commands.service;
+package com.howwow.schedulebot.telegram.commands.service;
 
-import com.howwow.schedulebot.commands.BotCommands;
-import com.howwow.schedulebot.service.HelpCommandService;
+import com.howwow.schedulebot.telegram.commands.BotCommands;
+import com.howwow.schedulebot.telegram.service.HelpCommandService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;

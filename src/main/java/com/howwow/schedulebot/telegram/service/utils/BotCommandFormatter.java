@@ -1,4 +1,4 @@
-package com.howwow.schedulebot.service.utils;
+package com.howwow.schedulebot.telegram.service.utils;
 
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 

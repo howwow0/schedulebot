@@ -1,6 +1,7 @@
-package com.howwow.schedulebot.commands.service;
+package com.howwow.schedulebot.telegram.commands.service;
 
-import com.howwow.schedulebot.commands.BotCommands;
+import com.howwow.schedulebot.exception.ValidationException;
+import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.chat.dto.request.UpdateDeliveryTimeChatSettingsRequest;
 import com.howwow.schedulebot.chat.dto.response.UpdatedDeliveryTimeResponse;
 import com.howwow.schedulebot.exception.NotFoundException;
@@ -41,9 +42,9 @@ public class UpdateDeliveryTimeCommand extends ServiceCommand {
         }
 
         try {
-            LocalTime deliveryTime = LocalTime.parse(strings[0], DateTimeFormatter.ofLocalizedPattern("HH:mm"));
+            LocalTime deliveryTime = LocalTime.parse(strings[0], DateTimeFormatter.ofPattern("HH:mm"));
 
-          UpdatedDeliveryTimeResponse updatedDeliveryTimeResponse = chatSettingsService.
+                UpdatedDeliveryTimeResponse updatedDeliveryTimeResponse = chatSettingsService.
                   updateDeliveryTime(new UpdateDeliveryTimeChatSettingsRequest(chat.getId(), deliveryTime));
 
             String successText =
@@ -57,7 +58,20 @@ public class UpdateDeliveryTimeCommand extends ServiceCommand {
             sendAnswer(absSender, chat.getId(), messageThreadId,
                     this.getCommandIdentifier(), successText);
 
-        } catch (NotFoundException e) {
+        }catch (ValidationException e) {
+            String errorText =
+                    """
+                    ⚠️ *Некорректный формат времени!*
+                    
+                    Время должно быть кратно 30 минутам.
+                    Используйте формат ЧЧ:00 или ЧЧ:30 (24-часовой).
+                    Пример: */%s 08:00* или */%s 08:30*
+                    """.formatted(BotCommands.UP_DELIVERY_TIME, BotCommands.UP_DELIVERY_TIME);
+
+            sendAnswer(absSender, chat.getId(), messageThreadId,
+                    this.getCommandIdentifier(), errorText);
+        }
+        catch (NotFoundException e) {
             String errorText =
                     """
                     ⚠️ *Ошибка обновления!*

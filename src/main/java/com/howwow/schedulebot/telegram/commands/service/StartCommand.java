@@ -1,6 +1,6 @@
-package com.howwow.schedulebot.commands.service;
+package com.howwow.schedulebot.telegram.commands.service;
 
-import com.howwow.schedulebot.commands.BotCommands;
+import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.chat.dto.request.CreateChatSettingsRequest;
 import com.howwow.schedulebot.exception.AlreadyExistsException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;

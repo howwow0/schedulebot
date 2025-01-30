@@ -1,4 +1,4 @@
-package com.howwow.schedulebot.service.utils;
+package com.howwow.schedulebot.telegram.service.utils;
 
 import com.howwow.schedulebot.chat.dto.response.FoundedChatResponse;
 

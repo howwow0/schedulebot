@@ -5,6 +5,7 @@ import com.howwow.schedulebot.chat.dto.response.*;
 import com.howwow.schedulebot.exception.NotFoundException;
 import com.howwow.schedulebot.chat.mapper.ChatSettingsMapper;
 import com.howwow.schedulebot.exception.AlreadyExistsException;
+import com.howwow.schedulebot.exception.ValidationException;
 import com.howwow.schedulebot.model.entities.ChatSettings;
 import com.howwow.schedulebot.model.repository.ChatSettingsRepository;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
@@ -83,7 +84,10 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
     @Override
     @Transactional
     @Modifying
-    public UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws NotFoundException {
+    public UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws NotFoundException, ValidationException {
+       if(updateDeliveryTimeChatSettingsRequest.deliveryTime().getMinute() % 30 != 0)
+           throw new ValidationException("Delivery time " + updateDeliveryTimeChatSettingsRequest.deliveryTime() + " was not valid");
+
         ChatSettings chatSettings = chatSettingsRepository.findByChatId(updateDeliveryTimeChatSettingsRequest.chatId());
 
         if(chatSettings == null) {

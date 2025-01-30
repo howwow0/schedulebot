@@ -1,12 +1,10 @@
-package com.howwow.schedulebot.commands;
+package com.howwow.schedulebot.telegram.commands;
 
 public enum BotCommands {
     START,
     HELP,
     SETTINGS,
     LINK_TOPIC,
-    SCHEDULE,
-    UP_SCHEDULE,
     UP_GROUP_NAME,
     UP_DELIVERY_TIME,
     DISABLE_DELIVERY;
