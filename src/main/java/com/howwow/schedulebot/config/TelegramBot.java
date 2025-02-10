@@ -38,7 +38,7 @@ public final class TelegramBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        return !isGroup;
+        return !!isGroup;
     }
 
     @Override

@@ -27,6 +27,8 @@ public class Lesson {
 
     private GroupType groupType;
 
+    private WeekType weekType;
+
     private String discipline;
 
     private String professor;

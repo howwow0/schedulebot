@@ -12,4 +12,5 @@ public interface ChatSettingsService {
     UpdatedChatResponse updateMessageThreadId(UpdateChatSettingsRequest updateChatSettingsRequest) throws NotFoundException;
     UpdatedGroupNameChatResponse updateGroupName(UpdateGroupNameChatSettingsRequest updateGroupNameRequest) throws NotFoundException;
     UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws NotFoundException, ValidationException;
+    void removeDeliveryTime(RemoveDeliveryTimeChatSettingsRequest removeDeliveryTimeChatSettingsRequest) throws NotFoundException;
 }

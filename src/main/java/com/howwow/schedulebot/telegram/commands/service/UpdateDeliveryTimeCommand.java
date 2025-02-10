@@ -58,18 +58,6 @@ public class UpdateDeliveryTimeCommand extends ServiceCommand {
             sendAnswer(absSender, chat.getId(), messageThreadId,
                     this.getCommandIdentifier(), successText);
 
-        }catch (ValidationException e) {
-            String errorText =
-                    """
-                    ⚠️ *Некорректный формат времени!*
-                    
-                    Время должно быть кратно 30 минутам.
-                    Используйте формат ЧЧ:00 или ЧЧ:30 (24-часовой).
-                    Пример: */%s 08:00* или */%s 08:30*
-                    """.formatted(BotCommands.UP_DELIVERY_TIME, BotCommands.UP_DELIVERY_TIME);
-
-            sendAnswer(absSender, chat.getId(), messageThreadId,
-                    this.getCommandIdentifier(), errorText);
         }
         catch (NotFoundException e) {
             String errorText =
@@ -94,6 +82,8 @@ public class UpdateDeliveryTimeCommand extends ServiceCommand {
 
             sendAnswer(absSender, chat.getId(), messageThreadId,
                     this.getCommandIdentifier(), errorText);
+        } catch (ValidationException e) {
+            throw new RuntimeException(e);
         }
     }
 }

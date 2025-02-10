@@ -1,5 +1,6 @@
 package com.howwow.schedulebot.telegram.commands.service;
 
+import com.howwow.schedulebot.schedule.service.GroupService;
 import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.chat.dto.request.UpdateGroupNameChatSettingsRequest;
 import com.howwow.schedulebot.chat.dto.response.UpdatedGroupNameChatResponse;
@@ -14,15 +15,17 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 public class UpdateGroupNameCommand extends ServiceCommand{
 
     private final ChatSettingsService chatSettingsService;
+    private final GroupService groupService;
 
-    public UpdateGroupNameCommand(ChatSettingsService chatSettingsService) {
+    public UpdateGroupNameCommand(ChatSettingsService chatSettingsService, GroupService groupService) {
         super(BotCommands.UP_GROUP_NAME.toString(), "Обновить группу 💬");
         this.chatSettingsService = chatSettingsService;
+        this.groupService = groupService;
     }
 
     @Override
     protected void execute(AbsSender absSender, User user, Integer messageThreadId, Chat chat, String[] strings) {
-        if(strings.length<1){
+        if(strings.length < 1){
             String errorText =
                     """
                     ❌ *Ошибка: Не указано название группы*
@@ -31,6 +34,19 @@ public class UpdateGroupNameCommand extends ServiceCommand{
                     Пример использования:
                     */%s [Название_группы]*
                     """.formatted(BotCommands.UP_GROUP_NAME);
+            sendAnswer(absSender, chat.getId(), messageThreadId,
+                    this.getCommandIdentifier(), errorText);
+            return;
+        }
+
+
+        if(!groupService.isGroupExist(strings[0])){
+            String errorText =
+                    """
+                    ❌ *Ошибка: Данная группа не существует на сайте*
+                    
+                    Пожалуйста, введите настоящее название группы.
+                    """;
             sendAnswer(absSender, chat.getId(), messageThreadId,
                     this.getCommandIdentifier(), errorText);
             return;

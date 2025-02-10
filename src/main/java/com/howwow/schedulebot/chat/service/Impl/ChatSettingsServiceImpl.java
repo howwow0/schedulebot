@@ -85,8 +85,12 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
     @Transactional
     @Modifying
     public UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws NotFoundException, ValidationException {
-       if(updateDeliveryTimeChatSettingsRequest.deliveryTime().getMinute() % 30 != 0)
-           throw new ValidationException("Delivery time " + updateDeliveryTimeChatSettingsRequest.deliveryTime() + " was not valid");
+        if (updateDeliveryTimeChatSettingsRequest.deliveryTime() == null) {
+            throw new ValidationException("Delivery time can't be null");
+        }
+        if(updateDeliveryTimeChatSettingsRequest.deliveryTime().getMinute() % 30 != 0) {
+            throw new ValidationException("Delivery time must be multiple of 30 minutes");
+        }
 
         ChatSettings chatSettings = chatSettingsRepository.findByChatId(updateDeliveryTimeChatSettingsRequest.chatId());
 
@@ -97,6 +101,17 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
         chatSettingsMapper.updateDeliveryTime(chatSettings, updateDeliveryTimeChatSettingsRequest.deliveryTime());
 
         return chatSettingsMapper.asUpdatedDeliveryTimeResponse(chatSettings);
+    }
+
+    @Override
+    public void removeDeliveryTime(RemoveDeliveryTimeChatSettingsRequest removeDeliveryTimeChatSettingsRequest) throws NotFoundException {
+        ChatSettings chatSettings = chatSettingsRepository.findByChatId(removeDeliveryTimeChatSettingsRequest.chatId());
+
+        if(chatSettings == null) {
+            throw new NotFoundException("Chat with id " + removeDeliveryTimeChatSettingsRequest.chatId() + " not found");
+        }
+
+        chatSettingsMapper.updateDeliveryTime(chatSettings, null);
     }
 
 }

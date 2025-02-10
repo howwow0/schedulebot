@@ -1,6 +1,6 @@
 package com.howwow.schedulebot.telegram.commands.service;
 
-import com.howwow.schedulebot.exception.ValidationException;
+import com.howwow.schedulebot.chat.dto.request.RemoveDeliveryTimeChatSettingsRequest;
 import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.chat.dto.request.UpdateDeliveryTimeChatSettingsRequest;
 import com.howwow.schedulebot.exception.NotFoundException;
@@ -23,10 +23,9 @@ public class DisableDeliveryCommand extends ServiceCommand {
     @Override
     protected void execute(AbsSender absSender, User user, Integer messageThreadId, Chat chat, String[] strings) {
         try {
-            chatSettingsService.updateDeliveryTime(
-                    UpdateDeliveryTimeChatSettingsRequest.builder()
+            chatSettingsService.removeDeliveryTime(
+                    RemoveDeliveryTimeChatSettingsRequest.builder()
                     .chatId(chat.getId())
-                    .deliveryTime(null)
                     .build());
 
             String successText =
@@ -53,7 +52,6 @@ public class DisableDeliveryCommand extends ServiceCommand {
 
             sendAnswer(absSender, chat.getId(), messageThreadId,
                     this.getCommandIdentifier(), errorText);
-        } catch (ValidationException ignored) {
         }
     }
 }

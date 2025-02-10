@@ -18,6 +18,8 @@ public class CommandRegistration implements InitializingBean {
     private final UpdateDeliveryTimeCommand updateDeliveryTimeCommand;
     private final UpdateGroupNameCommand updateGroupNameCommand;
     private final UpdateMessageThreadIdCommand updateMessageThreadIdCommand;
+private final TestCommand testCommand;
+
     @Override
     public void afterPropertiesSet() {
         telegramLongPollingCommandBot.register(startCommand);
@@ -27,5 +29,6 @@ public class CommandRegistration implements InitializingBean {
         telegramLongPollingCommandBot.register(updateDeliveryTimeCommand);
         telegramLongPollingCommandBot.register(updateGroupNameCommand);
         telegramLongPollingCommandBot.register(updateMessageThreadIdCommand);
+        telegramLongPollingCommandBot.register(testCommand);
     }
 }
