@@ -12,35 +12,34 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
 @Slf4j
-public final class UpdateMessageThreadIdCommand extends ServiceCommand {
+public class DisableDeliveryTimeScheduleCommand extends ServiceCommand {
 
     private final ChatSettingsService chatSettingsService;
 
-    public UpdateMessageThreadIdCommand(ChatSettingsService chatSettingsService) {
-        super(BotCommands.LINK_TOPIC.toString(), "Привязать уведомления к теме чата 📌");
+    public DisableDeliveryTimeScheduleCommand(ChatSettingsService chatSettingsService) {
+        super(BotCommands.DISABLE_DELIVERY.toString(), "Отключить отправку расписания 🔕");
         this.chatSettingsService = chatSettingsService;
     }
 
     @Override
     protected void execute(AbsSender absSender, User user, Integer messageThreadId, Chat chat, String[] strings) {
-        log.info("Пользователь '{}' пытается привязать тему уведомлений в чате {} к потоку {}",
-                user.getUserName(), chat.getId(), messageThreadId);
+        log.info("Пользователь '{}' пытается отключить расписание в чате {}", user.getUserName(), chat.getId());
 
         try {
-            chatSettingsService.updateMessageThreadId(chat.getId(), messageThreadId);
+            chatSettingsService.removeDeliveryTime(chat.getId());
 
-            String successText = MessageTemplates.THREAD_LINKED_SUCCESS;
+            String successText = MessageTemplates.SCHEDULE_DISABLED.formatted(BotCommands.UP_DELIVERY_TIME);
             sendAnswer(absSender, chat.getId(), messageThreadId, successText);
-            log.info("Тема уведомлений успешно привязана в чате {}", chat.getId());
+            log.info("Расписание успешно отключено в чате {}", chat.getId());
 
         } catch (NotFoundException e) {
-            String errorText = MessageTemplates.THREAD_LINK_ERROR.formatted(BotCommands.START, BotCommands.LINK_TOPIC);
+            String errorText = MessageTemplates.CHAT_NOT_FOUND_ERROR.formatted(BotCommands.START);
             sendAnswer(absSender, chat.getId(), messageThreadId, errorText);
-            log.warn("Чат {} не найден при попытке привязки темы", chat.getId());
+            log.warn("Чат {} не найден при попытке отключить расписание", chat.getId());
 
         } catch (Exception e) {
             sendAnswer(absSender, chat.getId(), messageThreadId, MessageTemplates.INTERNAL_ERROR);
-            log.error("Ошибка при привязке темы уведомлений в чате {}: {}", chat.getId(), e.getMessage(), e);
+            log.error("Ошибка при отключении расписания в чате {}: {}", chat.getId(), e.getMessage(), e);
         }
     }
 }

@@ -14,21 +14,20 @@ public class CommandRegistration implements InitializingBean {
     private final StartCommand startCommand;
     private final HelpCommand helpCommand;
     private final SettingsCommand settingsCommand;
-    private final DisableDeliveryCommand disableDeliveryCommand;
-    private final UpdateDeliveryTimeCommand updateDeliveryTimeCommand;
+    private final DisableDeliveryTimeScheduleCommand disableDeliveryTimeScheduleCommand;
+    private final UpdateDeliveryTimeScheduleCommand updateDeliveryTimeScheduleCommand;
     private final UpdateGroupNameCommand updateGroupNameCommand;
     private final UpdateMessageThreadIdCommand updateMessageThreadIdCommand;
-private final TestCommand testCommand;
-
+    private final SendScheduleCommand sendScheduleCommand;
     @Override
     public void afterPropertiesSet() {
         telegramLongPollingCommandBot.register(startCommand);
         telegramLongPollingCommandBot.register(helpCommand);
         telegramLongPollingCommandBot.register(settingsCommand);
-        telegramLongPollingCommandBot.register(disableDeliveryCommand);
-        telegramLongPollingCommandBot.register(updateDeliveryTimeCommand);
+        telegramLongPollingCommandBot.register(disableDeliveryTimeScheduleCommand);
+        telegramLongPollingCommandBot.register(updateDeliveryTimeScheduleCommand);
         telegramLongPollingCommandBot.register(updateGroupNameCommand);
         telegramLongPollingCommandBot.register(updateMessageThreadIdCommand);
-        telegramLongPollingCommandBot.register(testCommand);
+        telegramLongPollingCommandBot.register(sendScheduleCommand);
     }
 }

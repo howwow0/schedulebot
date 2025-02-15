@@ -7,7 +7,8 @@ public enum BotCommands {
     LINK_TOPIC,
     UP_GROUP_NAME,
     UP_DELIVERY_TIME,
-    DISABLE_DELIVERY;
+    DISABLE_DELIVERY,
+    SCHEDULE;
 
     @Override
     public String toString(){

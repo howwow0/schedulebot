@@ -1,7 +1,7 @@
 package com.howwow.schedulebot.chat.mapper;
 
 import com.howwow.schedulebot.chat.dto.response.*;
-import com.howwow.schedulebot.model.entities.ChatSettings;
+import com.howwow.schedulebot.model.entity.ChatSettings;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
@@ -9,18 +9,6 @@ import java.time.LocalTime;
 
 @Component
 public class ChatSettingsMapper {
-    public CreatedChatResponse asCreatedResponse(ChatSettings chatSettings) {
-        return CreatedChatResponse.builder()
-                .chatId(chatSettings.getChatId())
-                .build();
-    }
-
-    public UpdatedChatResponse asUpdatedMessageThreadIdResponse(ChatSettings chatSettings) {
-        return UpdatedChatResponse.builder()
-                .chatId(chatSettings.getChatId())
-                .messageThreadId(chatSettings.getMessageThreadId())
-                .build();
-    }
 
     public UpdatedGroupNameChatResponse asUpdatedGroupNameResponse(ChatSettings chatSettings) {
         return UpdatedGroupNameChatResponse.builder()

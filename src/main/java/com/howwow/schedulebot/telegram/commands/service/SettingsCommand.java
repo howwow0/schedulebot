@@ -1,16 +1,18 @@
 package com.howwow.schedulebot.telegram.commands.service;
 
 import com.howwow.schedulebot.telegram.commands.BotCommands;
-import com.howwow.schedulebot.chat.dto.request.FindChatRequest;
 import com.howwow.schedulebot.exception.NotFoundException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
 import com.howwow.schedulebot.telegram.service.utils.SettingsCommandFormatter;
+import com.howwow.schedulebot.config.MessageTemplates;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 @Component
+@Slf4j
 public class SettingsCommand extends ServiceCommand {
 
     private final ChatSettingsService chatSettingsService;
@@ -24,24 +26,23 @@ public class SettingsCommand extends ServiceCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Integer messageThreadId, Chat chat, String[] strings) {
+        log.info("Пользователь '{}' запросил текущие настройки для чата {}", user.getUserName(), chat.getId());
 
         try {
-            sendAnswer(absSender, chat.getId(), messageThreadId,
-                    getCommandIdentifier(), settingsCommandFormatter.format(
-                            chatSettingsService.findByChatId(
-                                    new FindChatRequest(chat.getId()))));
-        } catch (NotFoundException e) {
-            String errorText =
-                    """
-                    ⚠️ *Ошибка команды!*
-                    
-                    Чат не найден в системе. Активируйте бота заново:
-                    1. Введите команду */%s*
-                    2. Выполните первоначальную настройку
-                    """.formatted(BotCommands.START);
+            var chatSettings = chatSettingsService.findByChatId(chat.getId());
+            String formattedSettings = settingsCommandFormatter.format(chatSettings);
+            sendAnswer(absSender, chat.getId(), messageThreadId, formattedSettings);
 
-            sendAnswer(absSender, chat.getId(), messageThreadId,
-                    this.getCommandIdentifier(), errorText);
+            log.info("Настройки чата успешно отправлены для чата {}", chat.getId());
+
+        } catch (NotFoundException e) {
+            log.warn("Чат с ID {} не найден", chat.getId());
+            String errorText = MessageTemplates.CHAT_NOT_FOUND_ERROR.formatted(BotCommands.START);
+            sendAnswer(absSender, chat.getId(), messageThreadId, errorText);
+        }
+        catch (Exception e) {
+            log.error("Ошибка при отправки настроек в чате {}: {}", chat.getId(), e.getMessage(), e);
+            sendAnswer(absSender, chat.getId(), messageThreadId, MessageTemplates.INTERNAL_ERROR);
         }
     }
 }

@@ -7,10 +7,10 @@ import com.howwow.schedulebot.exception.NotFoundException;
 import com.howwow.schedulebot.exception.ValidationException;
 
 public interface ChatSettingsService {
-    CreatedChatResponse create(CreateChatSettingsRequest createChatSettingsRequest) throws AlreadyExistsException;
-    FoundedChatResponse findByChatId(FindChatRequest chatRequest) throws NotFoundException;
-    UpdatedChatResponse updateMessageThreadId(UpdateChatSettingsRequest updateChatSettingsRequest) throws NotFoundException;
+    Long create(Long chatId) throws AlreadyExistsException;
+    FoundedChatResponse findByChatId(Long chatId) throws NotFoundException;
+    void updateMessageThreadId(Long chatId, Integer messageThreadId) throws NotFoundException;
     UpdatedGroupNameChatResponse updateGroupName(UpdateGroupNameChatSettingsRequest updateGroupNameRequest) throws NotFoundException;
     UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws NotFoundException, ValidationException;
-    void removeDeliveryTime(RemoveDeliveryTimeChatSettingsRequest removeDeliveryTimeChatSettingsRequest) throws NotFoundException;
+    void removeDeliveryTime(Long chatId) throws NotFoundException;
 }
