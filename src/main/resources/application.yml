@@ -11,7 +11,7 @@ spring:
 
   data:
     redis:
-      host: localhost
+      host: redis
       port: 6379
 
   mvc:
@@ -19,7 +19,7 @@ spring:
       matching-strategy: ant_path_matcher
 
   datasource:
-    url: jdbc:postgresql://localhost:${DATABASE_PORT:5432}/${DATABASE_NAME:postgres}
+    url: jdbc:postgresql://postgres:${DATABASE_PORT:5432}/${DATABASE_NAME:postgres}
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:sa}
 
@@ -37,18 +37,15 @@ spring:
 
 logging:
   level:
-    # Уровень логирования для корневого логгера (по умолчанию)
     root: info
 
-    # Уровень логирования для конкретных пакетов
     com.howwow.schedulebot: warn
     org.springframework: WARN
     org.hibernate: ERROR
 
-  # Настройка файлов для записи логов
   file:
-    name: logs/app.log # Имя файла для записи логов
-    path: /var/logs/myapp # Путь к директории для логов (если не указано имя файла)
+    name: logs/app.log
+    path: /var/logs/myapp
 
   logback:
     rollingpolicy:

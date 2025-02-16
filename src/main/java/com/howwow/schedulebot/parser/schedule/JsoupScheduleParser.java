@@ -17,6 +17,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class JsoupScheduleParser implements Parser<String, List<Lesson>> {
             Document document = Jsoup.parse(html);
             log.debug("HTML страницы успешно загружен, длина: {} символов", html.length());
 
-            DayOfWeek currentDayOfWeek = DayOfWeek.MONDAY;
+            DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
             WeekType currentWeekType = DateUtils.isEvenWeek() ? WeekType.EVEN : WeekType.ODD;
 
             Elements rows = document.select("table tbody tr");

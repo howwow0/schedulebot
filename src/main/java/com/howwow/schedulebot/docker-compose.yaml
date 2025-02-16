@@ -1,8 +1,7 @@
+version: '3.8'
 services:
   schedulebot:
     image: schedulebot:latest
-    env_file:
-      - .env
     build:
       context: ../../../../../..
       args:
@@ -11,20 +10,22 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - network
+      - app_network
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   postgres:
     image: postgres:17.2-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_DB: ${DATABASE_NAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: sa
     ports:
-      - "${DATABASE_PORT}:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -33,11 +34,24 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - network
+      - app_network
+
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
 
 networks:
-  network:
+  app_network:
     driver: bridge
