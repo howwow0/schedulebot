@@ -1,5 +1,6 @@
 package com.howwow.schedulebot.parser.time;
 
+import com.howwow.schedulebot.exception.chat.ChatDateTimeParseException;
 import com.howwow.schedulebot.parser.Parser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class TimeParser implements Parser<String, LocalTime> {
 
         if (time == null || time.isBlank()) {
             log.error("Входное значение времени пустое или null");
-            throw new IllegalArgumentException("Время не может быть пустым");
+            throw new ChatDateTimeParseException("Входное значение времени пустое или null", time, 0);
         }
 
         for (String format : TIME_FORMATS) {
@@ -36,6 +37,6 @@ public class TimeParser implements Parser<String, LocalTime> {
         }
 
         log.error("Неверный формат времени: '{}'", time);
-        throw new IllegalArgumentException("Неверный формат времени: " + time);
+        throw new ChatDateTimeParseException("Неверный формат времени", time, 0);
     }
 }

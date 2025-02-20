@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.time.LocalTime;
 
 @Builder
-public record FoundedChatResponse(Long chatId, String groupName, LocalTime deliveryTime) {
+public record FoundedChatResponse(Long chatId, String groupName, LocalTime deliveryTime, boolean isActive) {
 }

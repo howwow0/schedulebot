@@ -8,6 +8,7 @@ import com.howwow.schedulebot.parser.utils.DateUtils;
 import com.howwow.schedulebot.schedule.fetcher.Fetcher;
 import com.howwow.schedulebot.parser.Parser;
 import com.howwow.schedulebot.parser.dayofweek.DayOfWeekParser;
+import com.howwow.schedulebot.schedule.fetcher.JsoupFetcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -30,7 +31,7 @@ public class JsoupScheduleParser implements Parser<String, List<Lesson>> {
     private static final String NO_LESSONS_TEXT = "Нет пар";
     private final TimeParser timeParser;
     private final DayOfWeekParser dayOfWeekParser;
-    private final Fetcher fetcher;
+    private final JsoupFetcher fetcher;
 
     @Override
     public List<Lesson> parse(String groupName) {
@@ -39,9 +40,8 @@ public class JsoupScheduleParser implements Parser<String, List<Lesson>> {
 
         try {
             String url = "https://ios.biti.mephi.ru/raspisanie/index.php?gr=" + groupName;
-            String html = fetcher.fetch(url);
-            Document document = Jsoup.parse(html);
-            log.debug("HTML страницы успешно загружен, длина: {} символов", html.length());
+            Document document = fetcher.parse(url);
+            log.debug("HTML страница успешно загружена");
 
             DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
             WeekType currentWeekType = DateUtils.isEvenWeek() ? WeekType.EVEN : WeekType.ODD;

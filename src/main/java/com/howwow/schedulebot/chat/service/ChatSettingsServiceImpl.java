@@ -2,17 +2,19 @@ package com.howwow.schedulebot.chat.service;
 
 import com.howwow.schedulebot.chat.dto.request.*;
 import com.howwow.schedulebot.chat.dto.response.*;
-import com.howwow.schedulebot.exception.NotFoundException;
-import com.howwow.schedulebot.chat.mapper.ChatSettingsMapper;
-import com.howwow.schedulebot.exception.AlreadyExistsException;
-import com.howwow.schedulebot.exception.ValidationException;
+import com.howwow.schedulebot.exception.chat.ChatAlreadyExistsException;
+import com.howwow.schedulebot.exception.chat.ChatNotFoundException;
+import com.howwow.schedulebot.exception.chat.GroupNotFoundException;
 import com.howwow.schedulebot.model.entity.ChatSettings;
 import com.howwow.schedulebot.repository.ChatSettingsRepository;
+import com.howwow.schedulebot.chat.mapper.ChatSettingsMapper;
+import com.howwow.schedulebot.chat.utils.SettingsFormatter;
+import com.howwow.schedulebot.schedule.service.group.GroupService;
+import com.howwow.schedulebot.schedule.service.group.dto.request.GroupCheckRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -20,59 +22,56 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
 
     private final ChatSettingsRepository chatSettingsRepository;
     private final ChatSettingsMapper chatSettingsMapper;
+    private final SettingsFormatter settingsFormatter;
+    private final GroupService groupService;
 
-
+    @Override
     @Transactional
     @Modifying
-    @Override
-    public Long create(Long chatId) throws AlreadyExistsException {
+    public CreatedChatResponse create(ChatIdRequest chatIdRequest) throws ChatAlreadyExistsException {
+        if (chatSettingsRepository.existsChatSettingsByChatId(chatIdRequest.chatId())) {
+            throw new ChatAlreadyExistsException(chatIdRequest.chatId());
+        }
+
         ChatSettings chatSettings = ChatSettings.builder()
-                .chatId(chatId)
+                .chatId(chatIdRequest.chatId())
                 .build();
 
-        if (chatSettingsRepository.existsByChatId(chatSettings.getChatId()))
-            throw new AlreadyExistsException("Chat with id " + chatSettings.getChatId() + " already exists");
-
         chatSettingsRepository.save(chatSettings);
-
-        return chatSettings.getChatId();
+        return chatSettingsMapper.asCreatedChatResponse(chatSettings);
     }
 
     @Override
-    public FoundedChatResponse findByChatId(Long chatId) throws NotFoundException {
-        ChatSettings chatSettings = chatSettingsRepository.findByChatId(chatId);
-
-        if(chatSettings == null) {
-            throw new NotFoundException("Chat with id " + chatId + " not found");
-        }
-
-        return chatSettingsMapper.asFoundChatResponse(chatSettings);
+    public FoundedChatResponse findByChatId(Long chatId) throws ChatNotFoundException {
+        return chatSettingsRepository.findChatSettingsByChatId(chatId)
+                .map(chatSettingsMapper::asFoundChatResponse)
+                .orElseThrow(() -> new ChatNotFoundException(chatId));
     }
 
     @Override
     @Transactional
     @Modifying
-    public void updateMessageThreadId(Long chatId, Integer messageThreadId) throws NotFoundException {
+    public UpdatedMessageThreadIdResponse updateMessageThreadId(UpdateMessageThreadIdRequest updateMessageThreadIdRequest) throws ChatNotFoundException {
+        ChatSettings chatSettings = chatSettingsRepository.findChatSettingsByChatId(updateMessageThreadIdRequest.chatId())
+                .orElseThrow(() -> new ChatNotFoundException(updateMessageThreadIdRequest.chatId()));
 
-        ChatSettings chatSettings = chatSettingsRepository.findByChatId(chatId);
+        chatSettingsMapper.updateMessageThreadId(chatSettings, updateMessageThreadIdRequest.messageThreadId());
 
-        if(chatSettings == null) {
-            throw new NotFoundException("Chat with id " + chatId + " not found");
-        }
-
-        chatSettingsMapper.updateMessageThreadId(chatSettings, messageThreadId);
-
+        return chatSettingsMapper.asUpdatedMessageThreadIdResponse(chatSettings);
     }
 
     @Override
     @Transactional
     @Modifying
-    public UpdatedGroupNameChatResponse updateGroupName(UpdateGroupNameChatSettingsRequest updateGroupNameRequest) throws NotFoundException {
-        ChatSettings chatSettings = chatSettingsRepository.findByChatId(updateGroupNameRequest.chatId());
-
-        if(chatSettings == null) {
-            throw new NotFoundException("Chat with id " + updateGroupNameRequest.chatId() + " not found");
+    public UpdatedGroupNameChatResponse updateGroupName(UpdateGroupNameChatSettingsRequest updateGroupNameRequest) throws ChatNotFoundException, GroupNotFoundException {
+        if(!groupService.isGroupExist(GroupCheckRequest.builder()
+                .groupName(updateGroupNameRequest.groupName())
+                .build())) {
+            throw new GroupNotFoundException(updateGroupNameRequest.groupName());
         }
+
+        ChatSettings chatSettings = chatSettingsRepository.findChatSettingsByChatId(updateGroupNameRequest.chatId())
+                .orElseThrow(() -> new ChatNotFoundException(updateGroupNameRequest.chatId()));
 
         chatSettingsMapper.updateGroupName(chatSettings, updateGroupNameRequest.groupName());
 
@@ -82,19 +81,9 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
     @Override
     @Transactional
     @Modifying
-    public UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws NotFoundException, ValidationException {
-        if (updateDeliveryTimeChatSettingsRequest.deliveryTime() == null) {
-            throw new ValidationException("Delivery time can't be null");
-        }
-        if(updateDeliveryTimeChatSettingsRequest.deliveryTime().getMinute() % 30 != 0) {
-            throw new ValidationException("Delivery time must be multiple of 30 minutes");
-        }
-
-        ChatSettings chatSettings = chatSettingsRepository.findByChatId(updateDeliveryTimeChatSettingsRequest.chatId());
-
-        if(chatSettings == null) {
-            throw new NotFoundException("Chat with id " + updateDeliveryTimeChatSettingsRequest.chatId() + " not found");
-        }
+    public UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws ChatNotFoundException {
+        ChatSettings chatSettings = chatSettingsRepository.findChatSettingsByChatId(updateDeliveryTimeChatSettingsRequest.chatId())
+                .orElseThrow(() -> new ChatNotFoundException(updateDeliveryTimeChatSettingsRequest.chatId()));
 
         chatSettingsMapper.updateDeliveryTime(chatSettings, updateDeliveryTimeChatSettingsRequest.deliveryTime());
 
@@ -104,14 +93,18 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
     @Override
     @Transactional
     @Modifying
-    public void removeDeliveryTime(Long chatId) throws NotFoundException {
-        ChatSettings chatSettings = chatSettingsRepository.findByChatId(chatId);
+    public UpdatedIsActiveStatusResponse toggleIsActive(Long chatId) throws ChatNotFoundException {
+        ChatSettings chatSettings = chatSettingsRepository.findChatSettingsByChatId(chatId)
+                .orElseThrow(() -> new ChatNotFoundException(chatId));
 
-        if(chatSettings == null) {
-            throw new NotFoundException("Chat with id " + chatId + " not found");
-        }
+        chatSettingsMapper.toggleIsActive(chatSettings);
 
-        chatSettingsMapper.updateDeliveryTime(chatSettings, null);
+        return chatSettingsMapper.asUpdatedIsActiveStatusResponse(chatSettings);
     }
 
+    @Override
+    public String getFormattedChatSettings(Long chatId) throws ChatNotFoundException {
+        return chatSettingsMapper.format(chatSettingsRepository.findChatSettingsByChatId(chatId)
+                .orElseThrow(() -> new ChatNotFoundException(chatId)), settingsFormatter);
+    }
 }

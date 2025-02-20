@@ -2,6 +2,7 @@ package com.howwow.schedulebot.parser.group;
 
 import com.howwow.schedulebot.parser.Parser;
 import com.howwow.schedulebot.schedule.fetcher.Fetcher;
+import com.howwow.schedulebot.schedule.fetcher.JsoupFetcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -18,7 +19,7 @@ import java.util.Set;
 @Slf4j
 public class JsoupGroupParser implements Parser<String, Set<String>> {
 
-    private final Fetcher fetcher;
+    private final JsoupFetcher fetcher;
     private static final String URL = "https://ios.biti.mephi.ru/raspisanie/";
 
     @Override
@@ -27,9 +28,8 @@ public class JsoupGroupParser implements Parser<String, Set<String>> {
         Set<String> groups = new HashSet<>();
 
         try {
-            String html = fetcher.fetch(URL);
-            Document doc = Jsoup.parse(html);
-            log.debug("HTML страницы успешно загружен, длина: {} символов", html.length());
+            Document doc = fetcher.parse(URL);
+            log.debug("HTML страница успешно загружена");
 
             Element header = doc.selectFirst("h4:contains(Очная форма обучения)");
             if (header == null) {

@@ -30,5 +30,8 @@ public class ChatSettings extends AbstractEntity{
     @Column(name = "delivery_time")
     private LocalTime deliveryTime;
 
+    @Builder.Default
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = false;
 
 }

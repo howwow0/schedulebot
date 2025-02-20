@@ -38,10 +38,9 @@ spring:
 logging:
   level:
     root: info
-
-    com.howwow.schedulebot: warn
-    org.springframework: WARN
-    org.hibernate: ERROR
+    com.howwow.schedulebot: info
+    org.springframework: info
+    org.hibernate: info
 
   file:
     name: logs/app.log

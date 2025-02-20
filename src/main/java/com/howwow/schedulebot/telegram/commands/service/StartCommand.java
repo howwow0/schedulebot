@@ -1,9 +1,12 @@
 package com.howwow.schedulebot.telegram.commands.service;
 
+import com.howwow.schedulebot.chat.dto.request.ChatIdRequest;
 import com.howwow.schedulebot.telegram.commands.BotCommands;
-import com.howwow.schedulebot.exception.AlreadyExistsException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
 import com.howwow.schedulebot.config.MessageTemplates;
+import com.howwow.schedulebot.telegram.exception.handlers.ChatCommandExceptionHandler;
+import com.howwow.schedulebot.telegram.exception.handlers.ValidationExceptionHandler;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -26,20 +29,20 @@ public final class StartCommand extends ServiceCommand {
         log.info("Пользователь '{}' пытается активировать бота в чате {}", user.getUserName(), chat.getId());
 
         try {
-            chatSettingsService.create(chat.getId());
+            chatSettingsService.create(ChatIdRequest.builder()
+                    .chatId(chat.getId())
+                    .build());
 
-            String responseText = MessageTemplates.BOT_ACTIVATED_MESSAGE.formatted(BotCommands.HELP, BotCommands.SETTINGS);
+            String responseText = MessageTemplates.BOT_ACTIVATED_MESSAGE;
             sendAnswer(absSender, chat.getId(), messageThreadId, responseText);
             sendAnswer(absSender, chat.getId(), messageThreadId, MessageTemplates.ABOUT_BOT);
             log.info("Бот успешно активирован для чата {}", chat.getId());
 
-        } catch (AlreadyExistsException e) {
-            log.warn("Попытка повторной активации бота в чате {}", chat.getId());
-            String errorText = MessageTemplates.BOT_ALREADY_ACTIVE.formatted(BotCommands.SETTINGS);
-            sendAnswer(absSender, chat.getId(), messageThreadId, errorText);
+        } catch (ConstraintViolationException e) {
+            ValidationExceptionHandler.handleException(absSender, chat, user, messageThreadId, e, getCommandIdentifier());
         } catch (Exception e) {
-            log.error("Ошибка при активации бота в чате {}: {}", chat.getId(), e.getMessage(), e);
-            sendAnswer(absSender, chat.getId(), messageThreadId, MessageTemplates.INTERNAL_ERROR);
+            ChatCommandExceptionHandler.handleException(absSender, chat, user, messageThreadId, e, getCommandIdentifier());
         }
+
     }
 }

@@ -2,6 +2,7 @@ package com.howwow.schedulebot.chat.mapper;
 
 import com.howwow.schedulebot.chat.dto.response.*;
 import com.howwow.schedulebot.model.entity.ChatSettings;
+import com.howwow.schedulebot.chat.utils.SettingsFormatter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
@@ -31,6 +32,12 @@ public class ChatSettingsMapper {
                 .groupName(chatSettings.getGroupName()).build();
     }
 
+    public CreatedChatResponse asCreatedChatResponse(ChatSettings chatSettings){
+        return CreatedChatResponse.builder()
+                .chatId(chatSettings.getChatId())
+                .build();
+    }
+
     public void updateMessageThreadId(ChatSettings chatSettings, Integer messageThreadId) {
         chatSettings.setMessageThreadId(messageThreadId);
     }
@@ -43,4 +50,25 @@ public class ChatSettingsMapper {
         chatSettings.setDeliveryTime(deliveryTime);
     }
 
+    public UpdatedMessageThreadIdResponse asUpdatedMessageThreadIdResponse(ChatSettings chatSettings) {
+        return UpdatedMessageThreadIdResponse.builder()
+                .chatId(chatSettings.getChatId())
+                .messageThreadId(chatSettings.getMessageThreadId())
+                .build();
+    }
+
+    public UpdatedIsActiveStatusResponse asUpdatedIsActiveStatusResponse(ChatSettings chatSettings) {
+        return UpdatedIsActiveStatusResponse.builder()
+                .chatId(chatSettings.getChatId())
+                .isActive(chatSettings.getIsActive())
+                .build();
+    }
+
+    public void toggleIsActive(ChatSettings chatSettings) {
+        chatSettings.setIsActive(!chatSettings.getIsActive());
+    }
+
+    public String format(ChatSettings chatSettings, SettingsFormatter settingsFormatter) {
+        return settingsFormatter.format(chatSettings);
+    }
 }

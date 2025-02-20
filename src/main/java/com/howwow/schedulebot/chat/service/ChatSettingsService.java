@@ -2,15 +2,20 @@ package com.howwow.schedulebot.chat.service;
 
 import com.howwow.schedulebot.chat.dto.request.*;
 import com.howwow.schedulebot.chat.dto.response.*;
-import com.howwow.schedulebot.exception.AlreadyExistsException;
-import com.howwow.schedulebot.exception.NotFoundException;
-import com.howwow.schedulebot.exception.ValidationException;
+import com.howwow.schedulebot.exception.chat.ChatAlreadyExistsException;
+import com.howwow.schedulebot.exception.chat.ChatNotFoundException;
+import com.howwow.schedulebot.exception.chat.GroupNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface ChatSettingsService {
-    Long create(Long chatId) throws AlreadyExistsException;
-    FoundedChatResponse findByChatId(Long chatId) throws NotFoundException;
-    void updateMessageThreadId(Long chatId, Integer messageThreadId) throws NotFoundException;
-    UpdatedGroupNameChatResponse updateGroupName(UpdateGroupNameChatSettingsRequest updateGroupNameRequest) throws NotFoundException;
-    UpdatedDeliveryTimeResponse updateDeliveryTime(UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws NotFoundException, ValidationException;
-    void removeDeliveryTime(Long chatId) throws NotFoundException;
+    CreatedChatResponse create(@Valid  ChatIdRequest chatIdRequest) throws ChatAlreadyExistsException;
+    FoundedChatResponse findByChatId(@NotNull Long chatId) throws ChatNotFoundException;
+    UpdatedMessageThreadIdResponse updateMessageThreadId(@Valid UpdateMessageThreadIdRequest updateMessageThreadIdRequest) throws ChatNotFoundException;
+    UpdatedGroupNameChatResponse updateGroupName(@Valid UpdateGroupNameChatSettingsRequest updateGroupNameRequest) throws ChatNotFoundException, GroupNotFoundException;
+    UpdatedDeliveryTimeResponse updateDeliveryTime(@Valid UpdateDeliveryTimeChatSettingsRequest updateDeliveryTimeChatSettingsRequest) throws ChatNotFoundException;
+    UpdatedIsActiveStatusResponse toggleIsActive(@NotNull Long chatId) throws ChatNotFoundException;
+    String getFormattedChatSettings(@NotNull Long chatId) throws ChatNotFoundException;
 }

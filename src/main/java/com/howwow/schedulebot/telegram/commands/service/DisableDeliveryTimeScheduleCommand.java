@@ -1,5 +1,7 @@
 package com.howwow.schedulebot.telegram.commands.service;
 
+import com.howwow.schedulebot.chat.dto.response.UpdatedIsActiveStatusResponse;
+import com.howwow.schedulebot.exception.chat.ChatNotFoundException;
 import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.exception.NotFoundException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
@@ -26,20 +28,14 @@ public class DisableDeliveryTimeScheduleCommand extends ServiceCommand {
         log.info("Пользователь '{}' пытается отключить расписание в чате {}", user.getUserName(), chat.getId());
 
         try {
-            chatSettingsService.removeDeliveryTime(chat.getId());
+           UpdatedIsActiveStatusResponse updatedIsActiveStatusResponse = chatSettingsService.toggleIsActive(chat.getId());
+        } catch (ChatNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
-            String successText = MessageTemplates.SCHEDULE_DISABLED.formatted(BotCommands.UP_DELIVERY_TIME);
+        String successText = MessageTemplates.SCHEDULE_DISABLED.formatted(BotCommands.UP_DELIVERY_TIME);
             sendAnswer(absSender, chat.getId(), messageThreadId, successText);
             log.info("Расписание успешно отключено в чате {}", chat.getId());
 
-        } catch (NotFoundException e) {
-            String errorText = MessageTemplates.CHAT_NOT_FOUND_ERROR.formatted(BotCommands.START);
-            sendAnswer(absSender, chat.getId(), messageThreadId, errorText);
-            log.warn("Чат {} не найден при попытке отключить расписание", chat.getId());
-
-        } catch (Exception e) {
-            sendAnswer(absSender, chat.getId(), messageThreadId, MessageTemplates.INTERNAL_ERROR);
-            log.error("Ошибка при отключении расписания в чате {}: {}", chat.getId(), e.getMessage(), e);
-        }
     }
 }

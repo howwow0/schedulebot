@@ -1,9 +1,14 @@
 package com.howwow.schedulebot.telegram.commands.service;
 
+import com.howwow.schedulebot.chat.dto.request.UpdateMessageThreadIdRequest;
+import com.howwow.schedulebot.chat.dto.response.UpdatedMessageThreadIdResponse;
 import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.exception.NotFoundException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
 import com.howwow.schedulebot.config.MessageTemplates;
+import com.howwow.schedulebot.telegram.exception.handlers.ChatCommandExceptionHandler;
+import com.howwow.schedulebot.telegram.exception.handlers.ValidationExceptionHandler;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -17,7 +22,7 @@ public final class UpdateMessageThreadIdCommand extends ServiceCommand {
     private final ChatSettingsService chatSettingsService;
 
     public UpdateMessageThreadIdCommand(ChatSettingsService chatSettingsService) {
-        super(BotCommands.LINK_TOPIC.toString(), "Привязать уведомления к теме чата 📌");
+        super(BotCommands.LINK_TOPIC.toString(), "Привязать отправку расписания к теме чата 📌");
         this.chatSettingsService = chatSettingsService;
     }
 
@@ -27,20 +32,19 @@ public final class UpdateMessageThreadIdCommand extends ServiceCommand {
                 user.getUserName(), chat.getId(), messageThreadId);
 
         try {
-            chatSettingsService.updateMessageThreadId(chat.getId(), messageThreadId);
+           UpdatedMessageThreadIdResponse updatedMessageThreadIdResponse = chatSettingsService.updateMessageThreadId(UpdateMessageThreadIdRequest.builder()
+                    .chatId(chat.getId())
+                    .messageThreadId(messageThreadId)
+                    .build());
 
             String successText = MessageTemplates.THREAD_LINKED_SUCCESS;
             sendAnswer(absSender, chat.getId(), messageThreadId, successText);
-            log.info("Тема уведомлений успешно привязана в чате {}", chat.getId());
+            log.info("Тема уведомлений успешно привязана в чате {}", updatedMessageThreadIdResponse.chatId());
 
-        } catch (NotFoundException e) {
-            String errorText = MessageTemplates.THREAD_LINK_ERROR.formatted(BotCommands.START, BotCommands.LINK_TOPIC);
-            sendAnswer(absSender, chat.getId(), messageThreadId, errorText);
-            log.warn("Чат {} не найден при попытке привязки темы", chat.getId());
-
+        } catch (ConstraintViolationException e) {
+            ValidationExceptionHandler.handleException(absSender, chat, user, messageThreadId, e, getCommandIdentifier());
         } catch (Exception e) {
-            sendAnswer(absSender, chat.getId(), messageThreadId, MessageTemplates.INTERNAL_ERROR);
-            log.error("Ошибка при привязке темы уведомлений в чате {}: {}", chat.getId(), e.getMessage(), e);
+            ChatCommandExceptionHandler.handleException(absSender, chat, user, messageThreadId, e, getCommandIdentifier());
         }
     }
 }
