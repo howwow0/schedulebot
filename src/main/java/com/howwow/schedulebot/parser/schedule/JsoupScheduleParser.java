@@ -32,7 +32,11 @@ public class JsoupScheduleParser implements Parser<String, List<Lesson>> {
     private final LessonMerger lessonMerger;
 
     @Override
-    @Cacheable(value = "scheduleCache", key = "#groupName", unless = "#result.isEmpty()")
+    @Cacheable(
+            value = "scheduleCache",
+            key = "#groupName + '_' + T(java.time.LocalDate).now()",
+            unless = "#result.isEmpty()"
+    )
     public List<Lesson> parse(String groupName) {
         log.info("Starting schedule parsing for group: {}", groupName);
 
