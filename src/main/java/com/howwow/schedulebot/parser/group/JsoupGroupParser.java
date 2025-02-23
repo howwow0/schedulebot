@@ -1,14 +1,13 @@
 package com.howwow.schedulebot.parser.group;
 
 import com.howwow.schedulebot.parser.Parser;
-import com.howwow.schedulebot.schedule.fetcher.Fetcher;
-import com.howwow.schedulebot.schedule.fetcher.JsoupFetcher;
+import com.howwow.schedulebot.parser.jsoup.JsoupDocumentParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -19,10 +18,11 @@ import java.util.Set;
 @Slf4j
 public class JsoupGroupParser implements Parser<String, Set<String>> {
 
-    private final JsoupFetcher fetcher;
+    private final JsoupDocumentParser fetcher;
     private static final String URL = "https://ios.biti.mephi.ru/raspisanie/";
 
     @Override
+    @Cacheable(value = "groupsCache", key = "'groups'", unless = "#result.isEmpty()")
     public Set<String> parse(String unused) {
         log.info("Начало парсинга групп с URL: {}", URL);
         Set<String> groups = new HashSet<>();

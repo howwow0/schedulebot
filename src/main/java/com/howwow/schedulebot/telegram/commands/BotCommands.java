@@ -7,7 +7,7 @@ public enum BotCommands {
     LINK_TOPIC,
     UP_GROUP_NAME,
     UP_DELIVERY_TIME,
-    DISABLE_DELIVERY,
+    TOGGLE_SCHEDULE,
     SCHEDULE;
 
     @Override

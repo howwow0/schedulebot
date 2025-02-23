@@ -1,10 +1,10 @@
 package com.howwow.schedulebot.schedule.service.lesson;
 
-import com.howwow.schedulebot.model.entity.Lesson;
-import com.howwow.schedulebot.schedule.service.lesson.dto.request.FindLessonByGroupNameRequest;
+import com.howwow.schedulebot.config.MessageTemplates;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-
+@Validated
 public interface LessonService {
-    List<Lesson> findLessonsByGroupName(FindLessonByGroupNameRequest findLessonByGroupNameRequest);
+    String getFormattedLessonsForGroup(@NotBlank(message = MessageTemplates.GROUP_NAME_NOT_FOUND_ERROR) String groupName);
 }

@@ -1,7 +1,9 @@
 package com.howwow.schedulebot.model.entity;
 
+import com.howwow.schedulebot.schedule.service.schedule.ChatSettingsJpaListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +17,7 @@ import java.time.LocalTime;
 @Builder
 @Table
 @Entity(name = "chat_settings")
+@EntityListeners(ChatSettingsJpaListener.class)
 public class ChatSettings extends AbstractEntity{
 
     @Column(nullable = false, name = "chat_id", unique = true)

@@ -2,10 +2,9 @@ package com.howwow.schedulebot.schedule.service.lesson;
 
 import com.howwow.schedulebot.model.entity.Lesson;
 import com.howwow.schedulebot.parser.schedule.JsoupScheduleParser;
-import com.howwow.schedulebot.schedule.service.lesson.dto.request.FindLessonByGroupNameRequest;
+import com.howwow.schedulebot.schedule.service.lesson.utils.LessonFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +15,12 @@ import java.util.List;
 public class LessonServiceImpl implements LessonService {
 
     private final JsoupScheduleParser jsoupScheduleParser;
+    private final LessonFormatter lessonFormatter;
 
     @Override
-    @Cacheable(value = "lessonsCache", key = "#findLessonByGroupNameRequest.groupName")
-    public List<Lesson> findLessonsByGroupName(FindLessonByGroupNameRequest findLessonByGroupNameRequest) {
-        log.info("Выполняется парсинг расписания для группы: {}", findLessonByGroupNameRequest.groupName());
-        return jsoupScheduleParser.parse(findLessonByGroupNameRequest.groupName());
+    public String getFormattedLessonsForGroup(String groupName) {
+        log.info("Выполняется парсинг и форматирование расписания для группы: {}", groupName);
+        List<Lesson> lessons = jsoupScheduleParser.parse(groupName);
+        return lessonFormatter.format(lessons);
     }
 }

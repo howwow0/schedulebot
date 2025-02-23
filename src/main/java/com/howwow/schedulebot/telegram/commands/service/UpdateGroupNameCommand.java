@@ -1,11 +1,8 @@
 package com.howwow.schedulebot.telegram.commands.service;
 
-import com.howwow.schedulebot.schedule.service.group.dto.request.GroupCheckRequest;
-import com.howwow.schedulebot.schedule.service.group.GroupService;
 import com.howwow.schedulebot.telegram.commands.BotCommands;
 import com.howwow.schedulebot.chat.dto.request.UpdateGroupNameChatSettingsRequest;
 import com.howwow.schedulebot.chat.dto.response.UpdatedGroupNameChatResponse;
-import com.howwow.schedulebot.exception.NotFoundException;
 import com.howwow.schedulebot.chat.service.ChatSettingsService;
 import com.howwow.schedulebot.telegram.exception.handlers.ChatCommandExceptionHandler;
 import com.howwow.schedulebot.telegram.exception.handlers.ValidationExceptionHandler;

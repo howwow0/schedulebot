@@ -1,7 +1,9 @@
 package com.howwow.schedulebot.schedule.service.group;
 
-import com.howwow.schedulebot.schedule.service.group.dto.request.GroupCheckRequest;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public interface GroupService {
-    boolean isGroupExist(GroupCheckRequest groupCheckRequest);
+    boolean isGroupExist(@NotNull String groupName);
 }

@@ -1,15 +1,14 @@
-package com.howwow.schedulebot.schedule.fetcher;
+package com.howwow.schedulebot.parser.jsoup;
 
 import com.howwow.schedulebot.parser.Parser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
-public class JsoupFetcher implements Parser<String, Document> {
+public class JsoupDocumentParser implements Parser<String, Document> {
     private static final int TIMEOUT_MILLIS = 5000;
     private static final String USER_AGENT = "Mozilla/5.0 (compatible; ScheduleBot/1.0)";
 

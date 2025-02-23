@@ -10,7 +10,6 @@ import com.howwow.schedulebot.repository.ChatSettingsRepository;
 import com.howwow.schedulebot.chat.mapper.ChatSettingsMapper;
 import com.howwow.schedulebot.chat.utils.SettingsFormatter;
 import com.howwow.schedulebot.schedule.service.group.GroupService;
-import com.howwow.schedulebot.schedule.service.group.dto.request.GroupCheckRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
     private final ChatSettingsMapper chatSettingsMapper;
     private final SettingsFormatter settingsFormatter;
     private final GroupService groupService;
+
 
     @Override
     @Transactional
@@ -64,9 +64,7 @@ public class ChatSettingsServiceImpl implements ChatSettingsService {
     @Transactional
     @Modifying
     public UpdatedGroupNameChatResponse updateGroupName(UpdateGroupNameChatSettingsRequest updateGroupNameRequest) throws ChatNotFoundException, GroupNotFoundException {
-        if(!groupService.isGroupExist(GroupCheckRequest.builder()
-                .groupName(updateGroupNameRequest.groupName())
-                .build())) {
+        if(!groupService.isGroupExist(updateGroupNameRequest.groupName())) {
             throw new GroupNotFoundException(updateGroupNameRequest.groupName());
         }
 

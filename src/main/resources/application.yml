@@ -19,9 +19,9 @@ spring:
       matching-strategy: ant_path_matcher
 
   datasource:
-    url: jdbc:postgresql://localhost:${DATABASE_PORT:5432}/${DATABASE_NAME:postgres}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:sa}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: sa
 
   jpa:
     show-sql: true
@@ -37,14 +37,10 @@ spring:
 
 logging:
   level:
-    root: info
-    com.howwow.schedulebot: info
-    org.springframework: info
-    org.hibernate: info
-
-  file:
-    name: logs/app.log
-    path: /var/logs/myapp
+    root: error
+    com.howwow.schedulebot: error
+    org.springframework: error
+    org.hibernate: error
 
   logback:
     rollingpolicy:
