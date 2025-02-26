@@ -9,12 +9,12 @@ import java.util.Locale;
 public class DateUtils {
 
     public static boolean isEvenWeek() {
-        int weekNumber = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfYear());
+        int weekNumber = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
         return weekNumber % 2 == 0;
     }
 
     public static WeekType getCurrentWeekType() {
-        return isEvenWeek() ? WeekType.EVEN : WeekType.ODD;
+        return isEvenWeek() ? WeekType.ODD : WeekType.EVEN;
     }
 
     public static LocalDate getCurrentDate() {
