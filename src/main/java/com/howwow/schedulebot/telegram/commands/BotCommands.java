@@ -8,7 +8,8 @@ public enum BotCommands {
     UP_GROUP_NAME,
     UP_DELIVERY_TIME,
     TOGGLE_SCHEDULE,
-    SCHEDULE;
+    SCHEDULE,
+    CITE;
 
     @Override
     public String toString(){
